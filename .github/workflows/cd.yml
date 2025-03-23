@@ -1,15 +1,31 @@
+name: Release
 on:
-  workflow_call:
-    inputs:
-      sha:
-        type: string
-        required: true
+  push:
+    tags:
+      - 'v*.*.*'
 
 
 jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+    with:
+      sha: ${{ github.sha }}
+
+  clean-up:
+    name: Delete Artifact
+    runs-on: ubuntu-latest
+    needs: [ci]
+    if: ${{ always() }}
+    steps:
+      - uses: geekyeggo/delete-artifact@v5
+        with:
+          name: app-build
   build:
     name: Build & push deploy Image
     runs-on: ubuntu-latest
+    needs: [ci]
+    environment: Production
     steps:
       - name: Checkout
         uses: actions/checkout@v3
