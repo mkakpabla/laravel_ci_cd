@@ -96,3 +96,25 @@ jobs:
         run: tar -xzf ./${{ inputs.sha }}.tar.gz -C .
       - name: Execute phpstan
         run: composer phpstan
+
+  phpunit:
+    name: phpunit
+    runs-on: ubuntu-latest
+    needs: [pint, phpstan, phpmd]
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-build
+          path: ./
+
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: bcmath, bz2, calendar, intl, mbstring, pdo_mysql, gd, exif, zip, sodium
+
+      - name: Extract Artefact
+        run: tar -xzf ./${{ inputs.sha }}.tar.gz -C .
+      - name: Execute phpunit
+        run: composer phpunit
