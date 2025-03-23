@@ -21,11 +21,11 @@ jobs:
       - uses: geekyeggo/delete-artifact@v5
         with:
           name: app-build
+
   build:
-    name: Build & push deploy Image
+    name: Deploy / Build
     runs-on: ubuntu-latest
     needs: [ci]
-    environment: Production
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -34,3 +34,28 @@ jobs:
         run: |
           docker build --tag mkakpabla/laravel-ci-cd:${{  github.ref_name }} .
           docker push mkakpabla/laravel-ci-cd:${{  github.ref_name }}
+
+  deploy-dev:
+    name: Deploy / Development
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run script
+        run: |
+          echo "I am running a jon in developpement environment"
+
+  deploy-prod:
+    name: Deploy / Production
+    runs-on: ubuntu-latest
+    needs: [build]
+    environment: Production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run script
+        run: |
+          echo "I am running a jon in production environment"
