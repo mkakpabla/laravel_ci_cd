@@ -101,7 +101,6 @@ jobs:
     name: phpunit
     runs-on: ubuntu-latest
     needs: [pint, phpstan, phpmd]
-    environment: Production
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
