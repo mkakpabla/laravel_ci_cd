@@ -56,7 +56,7 @@ jobs:
   deploy-prod:
     name: Deploy / Production
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [deploy-dev]
     environment: Production
     steps:
       - name: Checkout
